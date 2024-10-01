@@ -5,7 +5,7 @@ import { BarChart, Clock, DollarSign } from "lucide-react"
 export default function Dashboard() {
   return (
     <Layout>
-      <h1 className="text-3xl font-bold mb-6">ダッシュボード</h1>
+      <h1 className="text-3xl font-bold mb-6">やあやダッシュボード</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
