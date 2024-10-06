@@ -1,17 +1,44 @@
 import Layout from '../app/layout'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
 
 export default function Confirmation() {
-  const tasks = [
-    { name: 'タスク1', content: 'タスク1の実行内容' },
-    { name: 'タスク2', content: 'タスク2の実行内容' },
-    { name: 'タスク3', content: 'タスク3の実行内容' },
-  ]
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('https://yt3ii8lke0.execute-api.ap-northeast-1.amazonaws.com/dev/tasks/incomplete', {
+      mode: 'cors',
+      headers: {
+        'Origin': 'http://localhost:3000'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('APIレスポンス:', data);
+        // データが配列であることを確認し、直接使用します
+        if (Array.isArray(data)) {
+          const tasksData = data.map(item => ({
+            name: item.Name,
+            content: item.TotalScore.toString(),
+          }));
+          setTasks(tasksData);
+        } else {
+          setError('予期せぬデータ形式です');
+        }
+      })
+      .catch(error => {
+        console.error('APIリクエストエラー:', error);
+        setError(`APIリクエストエラーが発生しました: ${error.message}`);
+      });
+  }, []);
 
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-6">確認事項</h1>
+      {error && <p className="text-red-500">{error}</p>}
+      {tasks.length === 0 && !error && <p>データを読み込んでいます...</p>}
       <div className="space-y-4">
         {tasks.map((task, index) => (
           <Card key={index}>
@@ -19,7 +46,7 @@ export default function Confirmation() {
               <CardTitle>{task.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">{task.content}</p>
+              <p className="mb-4">スコア: {task.content}</p>
               <Button>確認</Button>
             </CardContent>
           </Card>
