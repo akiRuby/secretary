@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 export default function Confirmation() {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
+  const [completionMessage, setCompletionMessage] = useState('');
 
   useEffect(() => {
     fetch('https://yt3ii8lke0.execute-api.ap-northeast-1.amazonaws.com/dev/tasks/incomplete', {
@@ -42,19 +43,21 @@ export default function Confirmation() {
       headers: {
         'Content-Type': 'application/json',
         'Origin': 'https://secretary-eta.vercel.app'
-        // 必要に応じて認証ヘッダーを追加
       },
       body: JSON.stringify({ taskName: taskName }),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 200) {
+          setCompletionMessage(`タスク "${taskName}" を完了に変更しました！`);
+          setTasks(prevTasks => prevTasks.filter(task => task.name !== taskName));
+        }
+        return response.json();
+      })
       .then(data => {
         console.log('タスク完了レスポンス:', data);
-        // タスクリストから完了したタスクを削除
-        setTasks(prevTasks => prevTasks.filter(task => task.name !== taskName));
       })
       .catch(error => {
         console.error('タスク完了エラー:', error);
-        // エラーメッセージを表示する場合
         setError(`タスク完了エラーが発生しました: ${error.message}`);
       });
   };
@@ -63,6 +66,7 @@ export default function Confirmation() {
     <Layout>
       <h1 className="text-3xl font-bold mb-6">確認事項</h1>
       {error && <p className="text-red-500">{error}</p>}
+      {completionMessage && <p className="text-green-500 mb-4">{completionMessage}</p>}
       {tasks.length === 0 && !error && <p>データを読み込んでいます...</p>}
       <div className="space-y-4">
         {tasks.map((task, index) => (
