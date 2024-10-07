@@ -41,6 +41,7 @@ export default function Confirmation() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Origin': 'https://secretary-eta.vercel.app'
         // 必要に応じて認証ヘッダーを追加
       },
       body: JSON.stringify({ taskName: taskName }),
