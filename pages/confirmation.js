@@ -17,11 +17,12 @@ export default function Confirmation() {
       .then(response => response.json())
       .then(data => {
         console.log('APIレスポンス:', data);
-        // データが配列であることを確認し、直接使用します
+        // データが配列であることを確認し、必要な情報を抽出します
         if (Array.isArray(data)) {
           const tasksData = data.map(item => ({
             name: item.Name,
-            content: item.TotalScore.toString(),
+            aiInstruction: item.AIInstruction || '指示なし',
+            aiResult: item.AIResult || '結果なし',
           }));
           setTasks(tasksData);
         } else {
@@ -46,7 +47,8 @@ export default function Confirmation() {
               <CardTitle>{task.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">スコア: {task.content}</p>
+              <p className="mb-2">AI指示: {task.aiInstruction}</p>
+              <p className="mb-4">AI結果: {task.aiResult}</p>
               <Button>確認</Button>
             </CardContent>
           </Card>
