@@ -15,7 +15,7 @@ export default function Layout({ children }) {
       <nav className="bg-[#000000] text-[#FFFFFF] p-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-[#00FFFF] hover:text-[#FFD21E] transition-colors duration-300">
-            クローン大計画
+            クローン大計画（良い感じに進んでいる）
           </Link>
           <Navigation navItems={navItems} />
         </div>
