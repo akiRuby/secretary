@@ -35,6 +35,29 @@ export default function Confirmation() {
       });
   }, []);
 
+  // 確認ボタンのクリックハンドラーを追加
+  const handleConfirm = (taskName) => {
+    fetch('https://yt3ii8lke0.execute-api.ap-northeast-1.amazonaws.com/dev/tasks/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // 必要に応じて認証ヘッダーを追加
+      },
+      body: JSON.stringify({ taskName: taskName }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('タスク完了レスポンス:', data);
+        // タスクリストから完了したタスクを削除
+        setTasks(prevTasks => prevTasks.filter(task => task.name !== taskName));
+      })
+      .catch(error => {
+        console.error('タスク完了エラー:', error);
+        // エラーメッセージを表示する場合
+        setError(`タスク完了エラーが発生しました: ${error.message}`);
+      });
+  };
+
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-6">確認事項</h1>
@@ -49,7 +72,7 @@ export default function Confirmation() {
             <CardContent>
               <p className="mb-2">AI指示: {task.aiInstruction}</p>
               <p className="mb-4">AI結果: {task.aiResult}</p>
-              <Button>確認</Button>
+              <Button onClick={() => handleConfirm(task.name)}>確認</Button>
             </CardContent>
           </Card>
         ))}
